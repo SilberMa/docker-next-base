@@ -37,26 +37,17 @@ Each technology is carefully chosen to ensure optimal performance, ease of use, 
 
 Ensure Traefik is set up as a reverse proxy. Follow the [Traefik Documentation](https://doc.traefik.io/traefik/getting-started/quick-start/) if not already configured.
 
-### Step 1: Clone the Repository
+### Step 1: Clone the Repository <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="15" height="15">
+
+
 
 ```bash
 git clone https://github.com/SilberMa/docker-next-base.git your-project-name
 cd your-project-name
-
-## Setup Instructions
-
-### Traefik Configuration
+````
+### Step 2: Traefik Configuration
 
 This template assumes that Traefik is already set up as a reverse proxy. If you haven't configured Traefik yet, please follow the [Traefik Documentation](https://doc.traefik.io/traefik/getting-started/quick-start/) to do so. Make sure Traefik is configured to listen for incoming requests and route them appropriately to your Docker containers.
-
-### Step 1: Clone the Repository
-
-Clone this repository to get started with your Next.js project:
-
-```bash
-git clone https://github.com/SilberMa/docker-next-base.git your-project-name
-cd your-project-name
-```
 
 ### Step 2: Initialize the Next.js Application 🛠️
 Navigate to the src directory and create your Next.js app:
