@@ -1,0 +1,69 @@
+version: "3"
+volumes:
+  docker:
+
+
+networks:
+  dockerbase:
+    external: false
+  traefik:
+    external: true
+
+services:
+  database:
+    image: mongo
+    container_name: database
+    ports:
+      - 27017:27017
+    volumes:
+      - docker:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: next-docker
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - dockerbase
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: database
+      ME_CONFIG_MONGODB_PORT: "27017"
+      ME_CONFIG_MONGODB_URL: mongodb://admin:example@mongo:27017/
+
+    ports:
+      - 8081:8081
+    depends_on:
+      - database
+    networks:
+      - dockerbase
+
+  next:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: next
+    command: "npx next dev"
+    volumes:
+      - .:/app
+    environment:
+      DB_LOCAL_URL: mongodb://admin:example@database:27017/next-docker
+    depends_on:
+      - database
+    networks:
+      - dockerbase
+      - traefik
+    labels:
+      # Labels that are useful for traefik only  
+      - "traefik.enable=true"
+      - "traefik.backend=devserver"
+      - "traefik.docker.network=traefik" 
+      # http with redirection  
+      - "traefik.http.routers.next.rule=Host(`dev.docker.local`)"  
+      - "traefik.http.routers.next.tls=true"  
+      - "traefik.http.routers.next.entrypoints=https"   
+      - "traefik.http.services.next.loadbalancer.server.port=3000"
